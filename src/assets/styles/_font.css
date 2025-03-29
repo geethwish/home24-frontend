@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "InterSans";
+  src: url("./../fonts/inter/Inter-VariableFont_opsz\,wght.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MerriweatherSerif";
+  src: url("./../fonts/merriweather/Merriweather-VariableFont_opsz\,wdth\,wght.ttf")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
