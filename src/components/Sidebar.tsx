@@ -1,13 +1,40 @@
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, MenuProps } from 'antd'
 import logo from '../assets/images/logo.png'
 import {
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined,
+    AppstoreOutlined,
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 const { Sider } = Layout;
+type MenuItem = Required<MenuProps>['items'][number];
+
+const items: MenuItem[] = [
+    {
+        key: 'categories',
+        label: 'Categories',
+        type: 'group',
+        children: [
+            {
+                key: '9', label: 'Option 9', icon: <AppstoreOutlined />, children: [
+                    { key: '9-1', label: 'Option 9-1' },
+                    { key: '9-2', label: 'Option 9-2' },
+                ]
+            },
+            { key: '10', label: 'Option 10' },
+            { key: '11', label: 'Option 11' },
+            { key: '12', label: 'Option 12' },
+        ],
+    },
+    {
+        key: 'grp',
+        label: 'Product',
+        type: 'group',
+        children: [
+            { key: '13', label: 'Products' },
+            { key: '14', label: 'Add Product' },
+        ],
+    },
+];
 
 const Sidebar = () => {
     const isCollapsed = useSelector((state: RootState) => state.themeSettings.isMenuCollapsed);
@@ -32,23 +59,7 @@ const Sidebar = () => {
                 theme="light"
                 mode="inline"
                 defaultSelectedKeys={['1']}
-                items={[
-                    {
-                        key: '1',
-                        icon: <UserOutlined />,
-                        label: 'nav 1',
-                    },
-                    {
-                        key: '2',
-                        icon: <VideoCameraOutlined />,
-                        label: 'nav 2',
-                    },
-                    {
-                        key: '3',
-                        icon: <UploadOutlined />,
-                        label: 'nav 3',
-                    },
-                ]}
+                items={items}
             />
         </Sider>
     )

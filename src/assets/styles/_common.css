@@ -161,6 +161,10 @@
     @apply bg-card rounded-lg shadow-lg p-4 min-w-[100%] md:min-w-[400px];
   }
 
+  .widget-card {
+    @apply bg-card rounded-lg shadow-lg p-4 flex-1;
+  }
+
   .ant-btn-color-primary {
     background-color: var(--primary) !important;
   }
