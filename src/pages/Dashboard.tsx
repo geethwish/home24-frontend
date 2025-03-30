@@ -2,35 +2,21 @@ import { Breadcrumb, Button, Modal } from "antd"
 import { ColumnsType } from "antd/es/table";
 import { useNavigate } from "react-router-dom";
 import { Table, Select, Pagination } from 'antd';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     PlusOutlined,
     DeleteFilled
 } from '@ant-design/icons';
 import AddCategoryForm from "../components/category/AddCategoryForm";
 import { Category } from "../types";
+import api from "../services/api";
+import moment from "moment";
 
 const { Option } = Select;
 const { confirm } = Modal;
 
 
-
-const categoryData = [
-    {
-        id: 1,
-        name: 'Electronics',
-    },
-    {
-        id: 2,
-        name: 'Books',
-    },
-    {
-        id: 3,
-        name: 'Clothing',
-    }
-]
-
-const showDeleteConfirm = () => {
+const showDeleteConfirm = (callback: (id: string) => void, id: string) => {
     confirm({
         title: 'Are you sure you want to delete this category?',
         icon: <DeleteFilled color="red" />,
@@ -40,7 +26,7 @@ const showDeleteConfirm = () => {
         cancelText: 'Cancel',
         width: 500,
         onOk() {
-            console.log('Category deleted');
+            callback(id);
         },
         onCancel() {
             console.log('Delete action canceled');
@@ -54,11 +40,13 @@ const Dashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState<number>(10);
-    const [sortBy, setSortBy] = useState<string>('id');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortBy] = useState<string>('id');
+    const [sortOrder] = useState<'asc' | 'desc'>('asc');
     const [isOpen, setIsOpen] = useState(false)
     const total = 10
     const error = false
+    const [categories, setCategories] = useState<Category[]>([])
+    const [currentData, setCurrentData] = useState<Category[]>([])
     const [selectedRecord, setSelectedRecord] = useState<Category | null>(null)
 
 
@@ -66,63 +54,107 @@ const Dashboard = () => {
         setSelectedRecord(record)
         setIsOpen(true)
     }
+
+    const handleDeleteRecord = async (id: string) => {
+        setIsLoading(true)
+        try {
+            await api.delete(`/categories/${id}`)
+            setIsLoading(false)
+            fetchCategories()
+
+        } catch (error) {
+            console.log(error);
+            setIsLoading(false)
+
+        }
+    }
     const columns: ColumnsType<Category> = [
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            sorter: true,
-            sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'id' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
-            render: (text) => <span>{text}</span>,
-        },
+
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
             sorter: true,
             sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
+            sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
             render: (text, record) => <a onClick={() => navigate(`/${text}/${record.id}`)}>{text}</a>,
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+            sorter: false,
+            render: (text) => <span>{text}</span>,
+        },
+        {
+            title: 'Created date',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+            sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
+            render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
+        },
+        {
+            title: 'Updated date',
+            dataIndex: 'updated_at',
+            key: 'updated_at',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+            sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
+            render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
         },
         {
             title: '',
             dataIndex: 'action',
             key: 'action',
-            // sorter: true,
-            // sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
-            render: (text, record) => <div>
+            render: (_, record) => <div>
                 <Button type="link" onClick={() => handleSelectRecord(record)}>Edit</Button>
-                <Button type="link" danger onClick={() => showDeleteConfirm()}>Delete</Button>
+                <Button type="link" danger onClick={() => showDeleteConfirm(handleDeleteRecord, record.id)}>Delete</Button>
             </div>,
         },
-        // Add more columns as needed
     ];
 
 
 
     const handleCategoryFormConfirm = () => {
-
+        setIsOpen(false)
+        fetchCategories()
     }
+
+    const handleCategoryFormCancel = () => {
+        setIsOpen(false)
+        setSelectedRecord(null)
+    }
+
+    const onHandlePageChangeSize = (currentPageSize = pageSize, currentPage = page) => {
+        setPageSize(currentPageSize)
+        setPage(currentPage)
+        console.log(currentPage, currentPageSize);
+
+        setCurrentData(categories.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize))
+    }
+    const fetchCategories = async () => {
+        setIsLoading(true);
+        try {
+            const response = await api.get('/categories')
+
+            console.log(response.data, 'response');
+            setIsLoading(false);
+            setCategories(response.data);
+            setCurrentData(response.data.slice((page - 1) * pageSize, page * pageSize));
+
+        } catch (error) {
+            console.log("category fetching Error", error);
+            setIsLoading(false);
+            setCategories([]);
+        }
+    }
+
+    useEffect(() => {
+        fetchCategories()
+    }, [])
+
 
     return (
         <>
@@ -148,26 +180,26 @@ const Dashboard = () => {
                         <Button type="primary" size="large" onClick={() => setIsOpen(true)}><PlusOutlined classID="mr-1" />Add</Button>
                     </div>
                     <Table
+                        loading={isLoading}
                         className="mt-4"
                         rowKey="id"
                         columns={columns}
-                        dataSource={categoryData}
+                        dataSource={currentData}
                         pagination={false}
-                    // loading={isLoading}
                     // onChange={handleTableChange}
                     />
-                    {categoryData.length > 0 && (
+                    {categories.length > 0 && (
                         <div className="bg-gray-200 p-4 flex justify-between items-center">
                             <Pagination
                                 current={page}
                                 pageSize={pageSize}
-                                total={total}
-                                onChange={(p) => setPage(p)}
+                                total={categories.length}
+                                onChange={(p) => onHandlePageChangeSize(pageSize, p)}
 
                             />
                             <div>
                                 Page Size:
-                                <Select defaultValue={10} style={{ width: 120, marginLeft: 8 }} onChange={(value) => setPageSize(value)}>
+                                <Select defaultValue={10} style={{ width: 120, marginLeft: 8 }} onChange={(value) => onHandlePageChangeSize(value)}>
                                     <Option value={5}>5</Option>
                                     <Option value={10}>10</Option>
                                     <Option value={20}>20</Option>
@@ -178,12 +210,23 @@ const Dashboard = () => {
                         </div>
 
                     )}
-                    {categoryData.length === 0 && !isLoading && !error && <p>No products in this category.</p>}
+                    {categories.length === 0 && !isLoading && !error && <p>No products in this category.</p>}
                 </div>
             </div>
-            <AddCategoryForm isOpen={isOpen} handleCancel={() => setIsOpen(false)} handleOk={handleCategoryFormConfirm} category={selectedRecord} />
+            {
+                isOpen && <AddCategoryForm
+                    isOpen={isOpen}
+                    handleCancel={handleCategoryFormCancel}
+                    handleOk={handleCategoryFormConfirm}
+                    category={selectedRecord}
+                    categories={categories}
+                />
+
+            }
+
         </>
     )
 }
 
 export default Dashboard
+

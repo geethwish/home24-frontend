@@ -5,8 +5,12 @@ export interface CategoryFormProps {
 }
 
 export interface Category {
-  id: number;
+  id: string;
+  parent_id: string | null;
   name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Product {
@@ -44,3 +48,9 @@ export interface UserRegisterForm {
 }
 
 export type ResponseError = Error | { message: string; code?: number };
+
+export interface CategoryForm {
+  name: string;
+  description: string;
+  parent_id?: number;
+}
