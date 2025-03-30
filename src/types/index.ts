@@ -20,3 +20,27 @@ export interface Product {
   imageUrl?: string;
   description?: string;
 }
+
+export interface UserDetails {
+  id: string;
+  email: string;
+  name: string;
+}
+export interface UserToken {
+  user: UserDetails;
+  iat: number;
+  exp: number;
+}
+
+export interface UserLoginForm {
+  email: string;
+  password: string;
+}
+
+export interface UserRegisterForm {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export type ResponseError = Error | { message: string; code?: number };

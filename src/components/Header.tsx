@@ -7,26 +7,38 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { toggleMenuCollapse } from '../redux/slices/themeSettings.slice';
+import { getNameInitials } from '../utils/getNameInitials';
+import { logout } from '../redux/slices/user.slice';
+import { useNavigate } from 'react-router-dom';
 
 const { Header } = Layout;
 
-const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: 'Logout',
-        icon: <LogoutOutlined />,
-        extra: '',
-    },
-];
+
 
 const HeaderSection = () => {
     const isCollapsed = useSelector((state: RootState) => state.themeSettings.isMenuCollapsed);
+    const userDetails = useSelector((state: RootState) => state.user.userDetails);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // Handle toggle menu collapse
     const handleToggleMenu = () => {
         dispatch(toggleMenuCollapse())
     }
+
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: 'Logout',
+            icon: <LogoutOutlined />,
+            extra: '',
+            onClick: () => {
+                dispatch(logout());
+                navigate('/login');
+
+            }
+        },
+    ];
 
     console.log(isCollapsed, 'isCollapsed');
 
@@ -44,7 +56,7 @@ const HeaderSection = () => {
                 }}
             />
             <Dropdown menu={{ items }} placement='bottomCenter' trigger={['click']}>
-                <Avatar size={40}>G</Avatar>
+                <Avatar size={40}>{getNameInitials(userDetails?.user?.name)}</Avatar>
             </Dropdown>
         </Header>
 

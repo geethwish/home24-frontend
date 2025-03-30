@@ -12,3 +12,12 @@
   font-weight: normal;
   font-style: normal;
 }
+
+
+.my-inter-class {
+    font-family: "InterSans", sans-serif;
+}
+
+.my-merriweather-class {
+    font-family: "MerriweatherSerif", serif;
+}

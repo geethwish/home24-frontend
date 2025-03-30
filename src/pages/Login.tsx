@@ -1,15 +1,34 @@
 import logo from '../assets/images/logo.png'
 import AuthForm from '../components/AuthForm'
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginFailure, loginStart, loginSuccess } from '../redux/slices/user.slice';
+import api from '../services/api';
+import { UserLoginForm } from '../types';
+import { responseErrorHandler } from '../utils/errorHandler';
+import { toast } from 'react-toastify';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
 
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async (values: UserLoginForm) => {
 
+        dispatch(loginStart());
+        try {
+            const response = await api.post('/auth/login', values);
+            localStorage.setItem('authToken', response.data.token);
+            dispatch(loginSuccess(response.data));
+            toast.success('Login successful');
+            navigate('/');
+        } catch (error: unknown) {
+            dispatch(loginFailure(responseErrorHandler(error)));
+        }
     }
 
-    const handleFormSubmitFailed = () => {
-
+    const handleFormSubmitFailed = (errorInfo: unknown) => {
+        dispatch(loginFailure(responseErrorHandler(errorInfo)));
     }
 
     return (
