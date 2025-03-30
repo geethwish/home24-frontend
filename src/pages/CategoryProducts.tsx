@@ -1,86 +1,94 @@
-import { Breadcrumb, Button, Modal } from "antd"
-import { ColumnsType } from "antd/es/table";
-import { useNavigate } from "react-router-dom";
-import { Table, Select, Pagination } from 'antd';
-import { useState } from "react";
+import { Avatar, Breadcrumb, Button, Pagination, Select, Table } from "antd"
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     PlusOutlined,
-    DeleteFilled
 } from '@ant-design/icons';
-import AddCategoryForm from "../components/category/AddCategoryForm";
-import { Category } from "../types";
-
+import { ColumnsType } from "antd/es/table";
+import { Product } from "../types";
 const { Option } = Select;
-const { confirm } = Modal;
 
-
-
-const categoryData = [
+const productData = [
     {
         id: 1,
-        name: 'Electronics',
+        name: 'Product 1',
+        category: 'Electronics',
+        price: 100,
+        stock: 50,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-02',
+
     },
     {
         id: 2,
-        name: 'Books',
+        name: 'Product 2',
+        category: 'Books',
+        price: 20,
+        stock: 100,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-02',
+
     },
     {
         id: 3,
-        name: 'Clothing',
+        name: 'Product 3',
+        category: 'Clothing',
+        price: 30,
+        stock: 200,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-02',
+
+    },
+    {
+        id: 4,
+        name: 'Product 4',
+        category: 'Electronics',
+        price: 150,
+        stock: 20,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-02',
+
+    },
+    {
+        id: 5,
+        name: 'Product 5',
+        category: 'Books',
+        price: 25,
+        stock: 80,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-02',
     }
 ]
-
-const showDeleteConfirm = () => {
-    confirm({
-        title: 'Are you sure you want to delete this category?',
-        icon: <DeleteFilled color="red" />,
-        content: 'Deleting this category will remove it permanently. This action cannot be undone.',
-        okText: 'Yes, Delete',
-        okType: 'danger',
-        cancelText: 'Cancel',
-        width: 500,
-        onOk() {
-            console.log('Category deleted');
-        },
-        onCancel() {
-            console.log('Delete action canceled');
-        },
-    });
-};
-
-
-const Dashboard = () => {
+const CategoryProducts = () => {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(true);
+    const { category: routeCategory, id: routeId } = useParams<{ category: string; id: string }>();
+    const [category, setCategory] = useState<string | undefined>();
+    const [id, setId] = useState<string | undefined>();
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const [sortBy, setSortBy] = useState<string>('id');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [isOpen, setIsOpen] = useState(false)
     const total = 10
     const error = false
-    const [selectedRecord, setSelectedRecord] = useState<Category | null>(null)
+    const isLoading = false
 
 
-    const handleSelectRecord = (record: Category) => {
-        setSelectedRecord(record)
-        setIsOpen(true)
-    }
-    const columns: ColumnsType<Category> = [
+    useEffect(() => {
+        setCategory(routeCategory);
+        setId(routeId);
+    }, [routeCategory, routeId]);
+
+
+    const showDeleteConfirm = () => {
+        // Show a confirmation modal before deleting the product
+        console.log('Delete product');
+    };
+    const columns: ColumnsType<Product> = [
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            sorter: true,
-            sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'id' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
-            render: (text) => <span>{text}</span>,
+            title: 'Product Image',
+            dataIndex: 'imageUrl',
+            key: 'imageUrl',
+            render: (text) => <Avatar shape="square" src={text} alt="Product Image" size={64} />,
         },
         {
             title: 'Name',
@@ -95,7 +103,50 @@ const Dashboard = () => {
             //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
             //     },
             // }),
-            render: (text, record) => <a onClick={() => navigate(`/${text}/${record.id}`)}>{text}</a>,
+            render: (text, record) => <a onClick={() => navigate(`/product/${record.id}`)}>{text}</a>,
+        },
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+            // sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
+            // onHeaderCell: (column) => ({
+            //     onClick: () => {
+            //         setSortBy(column.dataIndex as string);
+            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
+            //     },
+            // }),
+            // render: (text, record) => <a onClick={() => navigate(`/product/${record.id}`)}>{text}</a>,
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+        },
+        {
+            title: 'Stock',
+            dataIndex: 'stock',
+            key: 'stock',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+        },
+        {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
+        },
+        {
+            title: 'Updated At',
+            dataIndex: 'updatedAt',
+            key: 'updatedAt',
+            sorter: true,
+            sortDirections: ['ascend', 'descend'],
         },
         {
             title: '',
@@ -111,7 +162,7 @@ const Dashboard = () => {
             //     },
             // }),
             render: (text, record) => <div>
-                <Button type="link" onClick={() => handleSelectRecord(record)}>Edit</Button>
+                <Button type="link" onClick={() => navigate(`/product/${record.id}`)}>Edit</Button>
                 <Button type="link" danger onClick={() => showDeleteConfirm()}>Delete</Button>
             </div>,
         },
@@ -119,44 +170,38 @@ const Dashboard = () => {
     ];
 
 
-
-    const handleCategoryFormConfirm = () => {
-
-    }
-
     return (
         <>
             <div className="mt-4 mb-1">
                 <Breadcrumb
                     items={[
                         {
-                            title: 'Dashboard',
+                            title: 'Category',
                         },
                         {
-                            title: 'Categories',
+                            title: category,
                         },
                     ]}
                 />
             </div>
-
             <div>
                 <div>
                     <div className="mt-4 flex justify-between items-center">
                         <h3>
-                            Category List
+                            Product List
                         </h3>
-                        <Button type="primary" size="large" onClick={() => setIsOpen(true)}><PlusOutlined classID="mr-1" />Add</Button>
+                        <Button type="primary" size="large" onClick={() => navigate('/product')}><PlusOutlined classID="mr-1" />Add</Button>
                     </div>
                     <Table
                         className="mt-4"
                         rowKey="id"
                         columns={columns}
-                        dataSource={categoryData}
+                        dataSource={productData}
                         pagination={false}
                     // loading={isLoading}
                     // onChange={handleTableChange}
                     />
-                    {categoryData.length > 0 && (
+                    {productData.length > 0 && (
                         <div className="bg-gray-200 p-4 flex justify-between items-center">
                             <Pagination
                                 current={page}
@@ -178,12 +223,11 @@ const Dashboard = () => {
                         </div>
 
                     )}
-                    {categoryData.length === 0 && !isLoading && !error && <p>No products in this category.</p>}
+                    {productData.length === 0 && !isLoading && !error && <p>No products in this category.</p>}
                 </div>
             </div>
-            <AddCategoryForm isOpen={isOpen} handleCancel={() => setIsOpen(false)} handleOk={handleCategoryFormConfirm} category={selectedRecord} />
         </>
     )
 }
 
-export default Dashboard
+export default CategoryProducts

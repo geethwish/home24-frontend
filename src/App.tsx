@@ -5,6 +5,8 @@ import MainLayout from './layouts/MainLayout'
 const LoginPage = lazy(() => import('./pages/Login'))
 const RegisterPage = lazy(() => import('./pages/Register'))
 const DashboardPage = lazy(() => import('./pages/Dashboard'))
+const CategoryProductsPage = lazy(() => import('./pages/CategoryProducts'))
+const ManageProductDetailsPage = lazy(() => import('./pages/ManageProductDetails'))
 
 function App() {
 
@@ -20,6 +22,9 @@ function App() {
           }
         >
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/:category/:id" element={<CategoryProductsPage />} />
+          <Route path="/product" element={<ManageProductDetailsPage />} />
+          <Route path="/product/:id" element={<ManageProductDetailsPage />} />
         </Route>
 
       </Routes>
