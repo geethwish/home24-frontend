@@ -20,7 +20,11 @@ const ProductTable: FC<ProductTableProps> = (props) => {
             title: 'Product Image',
             dataIndex: 'imageUrl',
             key: 'imageUrl',
-            render: (text) => <Image src={text} alt="Product Image" width={120} height={120} />,
+            render: (text) => <Image src={text} alt="Product Image" width={140} height={120} className='object-cover'
+                fallback={'/src/assets/images/placeholderImage.png'}
+            />,
+            responsive: ['sm'],
+            minWidth: 120,
         },
         {
             title: 'Name',
@@ -37,6 +41,7 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                 },
             }),
             render: (text, record) => <a onClick={() => navigate(`/product/${record.id}`)}>{text}</a>,
+            minWidth: 120,
         },
         {
             title: 'Price',
@@ -52,6 +57,8 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                     }
                 },
             }),
+            responsive: ['sm'],
+            minWidth: 120,
         },
         {
             title: 'Stock',
@@ -67,6 +74,8 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                     }
                 },
             }),
+            responsive: ['sm'],
+            minWidth: 120,
         },
         {
             title: 'Created At',
@@ -82,7 +91,9 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                     }
                 },
             }),
+            responsive: ['sm'],
             render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
+            minWidth: 120,
         },
         {
             title: 'Updated At',
@@ -98,6 +109,7 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                     }
                 },
             }),
+            responsive: ['sm'],
             render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
         },
         {
@@ -108,12 +120,16 @@ const ProductTable: FC<ProductTableProps> = (props) => {
                 <Button type="link" onClick={() => navigate(`/product/${record.id}`)}>Edit</Button>
                 <Button type="link" danger onClick={() => onDeleteProduct(record.id)}>Delete</Button>
             </div>,
+            responsive: ['sm'],
+            minWidth: 120,
         },
     ];
     return (
         <>
             <Table
-                className="mt-4"
+                tableLayout="auto"
+                scroll={{ x: 'max-content', y: 55 * 10 }}
+                className="mt-4 "
                 columns={columns}
                 dataSource={products !== null && products.products}
                 pagination={false}

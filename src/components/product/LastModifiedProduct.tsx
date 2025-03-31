@@ -1,14 +1,15 @@
-import { Avatar, Tag } from 'antd';
+import { Avatar } from 'antd';
 import React, { FC } from 'react'
 import { Link } from 'react-router-dom';
+import { Product } from '../../types';
+import moment from 'moment';
 
-interface LastModifiedProductWidgetProps {
-    productName: string | null;
+interface LastModifiedProductWidgetProps extends Product {
     title: string
 }
 
-const LastModifiedProduct: FC<LastModifiedProductWidgetProps> = ({ productName, title }) => {
-    if (!productName) {
+const LastModifiedProduct: FC<LastModifiedProductWidgetProps> = ({ name, title, updated_at, imageUrl, id }) => {
+    if (!name) {
         return null;
     }
 
@@ -18,29 +19,21 @@ const LastModifiedProduct: FC<LastModifiedProductWidgetProps> = ({ productName, 
 
             <div className="flex gap-2">
 
-                <Avatar shape="square" size={120} />
+                <Avatar shape="square" size={120} src={imageUrl} />
 
                 <div className='flex flex-col gap-1'>
 
 
-                    <Link to={"/product/:id"}>
+                    <Link to={`/product/${id}`}>
                         <p className='text-primary font-bold text-lg'>
-                            Lorem Ipsum
+                            {name}
                         </p>
                     </Link>
 
-                    <div className='flex gap-2'>
-                        <Tag color='#cac5fe'>
-                            <a
-                                href="/category/:id"
-                            >
-                                Category
-                            </a>
-                        </Tag>
-
-                    </div>
                     <small className='text-gray-500 text-md font-semibold'>
-                        20/20/2025
+                        {
+                            moment(updated_at).format('MMMM Do YYYY, h:mm:ss a')
+                        }
                     </small>
                     <small className='text-sm font-semibold text-gray-500'>
                         {title}

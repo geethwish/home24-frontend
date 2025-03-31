@@ -115,9 +115,11 @@ const ManageProductDetails = () => {
                     {
                         isEdit && <>
                             <Image
-                                className='w-full'
-                                src={product?.imageUrl ?? ""}
+                                className="w-full"
+                                src={product?.imageUrl}
                                 alt="Product Image"
+                                fallback={'/src/assets/images/placeholderImage.png'}
+                                wrapperStyle={{ width: '100%', height: 'auto' }}
                             />
                             <h2 className='text-primary text-xl mt-2 mb-2'>{product?.name ?? ""}
                                 <Tooltip title={!showForm ? "Edit Product" : "View Product"}>

@@ -9,9 +9,33 @@ import CountCard from '../components/product/CountCard';
 import {
     UnorderedListOutlined, ProductOutlined
 } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+import { WidgetProps } from '../types';
 
 const { Content } = Layout;
 const MainLayout = () => {
+    const [widgetData, setWidgetData] = useState<WidgetProps>(null);
+
+    const fetchWidgetData = async () => {
+        try {
+            const response = await api.get('/support');
+            setWidgetData(response.data);
+        } catch (error) {
+            console.error('Error fetching widget data:', error);
+        }
+
+    }
+
+    useEffect(() => {
+        fetchWidgetData();
+        const interval = setInterval(() => {
+            fetchWidgetData();
+        }, 10000);
+
+        return () => clearInterval(interval); // Cleanup interval on component unmount
+    }, []);
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
 
@@ -28,10 +52,24 @@ const MainLayout = () => {
                         }}
                     >
                         <div className="flex  gap-2 flex-wrap">
-                            <LastModifiedProduct productName={"Lorem Ipsum"} title='Last Modified Product' />
-                            <LastModifiedProduct productName={"Lorem Ipsum"} title='Recently Added Product' />
-                            <CountCard title='Categories' count={14} icon={<UnorderedListOutlined size={48} />} />
-                            <CountCard title='Products' icon={<ProductOutlined />} count={200} />
+                            {
+                                widgetData && widgetData.latestProduct && <LastModifiedProduct {...widgetData.latestProduct} title='Last Modified Product' />
+                            }
+                            {
+                                widgetData && widgetData.recentlyAddedProducts && <LastModifiedProduct {...widgetData.recentlyAddedProducts} title='Recently Added Product' />
+                            }
+
+
+
+                            {
+                                widgetData && widgetData.totalCategoriesCount && <CountCard title='Categories' count={widgetData.totalCategoriesCount} icon={<UnorderedListOutlined size={48} />} />
+                            }
+
+                            {
+                                widgetData && widgetData.totalProductCount && <CountCard title='Products' icon={<ProductOutlined />} count={widgetData.totalProductCount} />
+
+                            }
+
                         </div>
 
 

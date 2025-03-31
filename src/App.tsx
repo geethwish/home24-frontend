@@ -3,6 +3,9 @@ import { lazy } from 'react'
 import MainLayout from './layouts/MainLayout'
 import { ToastContainer } from 'react-toastify'
 import PrivateRoute from './router/PrivateRoute'
+import { useSelector } from 'react-redux'
+import { RootState } from './redux/store'
+import PageLoader from './components/PageLoader'
 
 const LoginPage = lazy(() => import('./pages/Login'))
 const RegisterPage = lazy(() => import('./pages/Register'))
@@ -13,9 +16,10 @@ const AllProductsPage = lazy(() => import('./pages/Products'))
 
 
 function App() {
-
+  const isLoading = useSelector((state: RootState) => state.user.loading);
   return (
     <BrowserRouter>
+      {isLoading && <PageLoader />}
       <ToastContainer />
       <Routes>
         <Route path="/login" element={<LoginPage />} />

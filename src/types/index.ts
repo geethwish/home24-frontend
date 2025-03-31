@@ -76,3 +76,10 @@ export interface ProductTableProps {
   sortBy: string;
   sortOrder: "asc" | "desc";
 }
+
+export interface WidgetProps {
+  latestProduct: Product;
+  recentlyAddedProducts: Product;
+  totalCategoriesCount: 20;
+  totalProductCount: number;
+}
