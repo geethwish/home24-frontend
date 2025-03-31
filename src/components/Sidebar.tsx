@@ -1,7 +1,6 @@
 import { Layout, Menu, MenuProps } from 'antd'
 import logo from '../assets/images/logo.png'
 import {
-    AppstoreOutlined,
     BranchesOutlined,
     CustomerServiceFilled,
     HomeFilled
@@ -82,8 +81,6 @@ const Sidebar = () => {
 
         try {
             const response = await api.get('/categories/categoryMenu')
-
-            console.log(response.data, 'response');
 
             reArrangeMenuItems(response.data);
 

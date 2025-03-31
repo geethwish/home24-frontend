@@ -43,7 +43,6 @@ const Dashboard = () => {
     const [sortBy] = useState<string>('id');
     const [sortOrder] = useState<'asc' | 'desc'>('asc');
     const [isOpen, setIsOpen] = useState(false)
-    const total = 10
     const error = false
     const [categories, setCategories] = useState<Category[]>([])
     const [currentData, setCurrentData] = useState<Category[]>([])

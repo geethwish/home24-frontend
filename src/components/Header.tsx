@@ -40,8 +40,6 @@ const HeaderSection = () => {
         },
     ];
 
-    console.log(isCollapsed, 'isCollapsed');
-
     return (
         <Header className="text-white flex justify-between items-center" style={{ backgroundColor: '#ffff', paddingLeft: 0 }}>
             <Button

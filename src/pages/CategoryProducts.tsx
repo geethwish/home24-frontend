@@ -1,68 +1,41 @@
-import { Avatar, Breadcrumb, Button, Pagination, Select, Table } from "antd"
+import { Avatar, Breadcrumb, Button, Modal, Pagination, Select, Table } from "antd"
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+    DeleteFilled,
     PlusOutlined,
 } from '@ant-design/icons';
 import { ColumnsType } from "antd/es/table";
-import { Product } from "../types";
+import { Product, ProductDetails } from "../types";
+import api from "../services/api";
+import moment from "moment";
+import { toast } from "react-toastify";
 const { Option } = Select;
+const { confirm } = Modal;
 
-const productData = [
-    {
-        id: 1,
-        name: 'Product 1',
-        category: 'Electronics',
-        price: 100,
-        stock: 50,
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-02',
+const showDeleteConfirm = (callback: (id: string) => void, id: string) => {
+    confirm({
+        title: 'Are you sure you want to delete this product?',
+        icon: <DeleteFilled color="red" />,
+        content: 'Deleting this product will remove it permanently. This action cannot be undone.',
+        okText: 'Yes, Delete',
+        okType: 'danger',
+        cancelText: 'Cancel',
+        width: 500,
+        onOk() {
+            callback(id);
+        },
+        onCancel() {
+            console.log('Delete action canceled');
+        },
+    });
+};
 
-    },
-    {
-        id: 2,
-        name: 'Product 2',
-        category: 'Books',
-        price: 20,
-        stock: 100,
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-02',
-
-    },
-    {
-        id: 3,
-        name: 'Product 3',
-        category: 'Clothing',
-        price: 30,
-        stock: 200,
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-02',
-
-    },
-    {
-        id: 4,
-        name: 'Product 4',
-        category: 'Electronics',
-        price: 150,
-        stock: 20,
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-02',
-
-    },
-    {
-        id: 5,
-        name: 'Product 5',
-        category: 'Books',
-        price: 25,
-        stock: 80,
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-02',
-    }
-]
 const CategoryProducts = () => {
     const navigate = useNavigate();
     const { category: routeCategory, id: routeId } = useParams<{ category: string; id: string }>();
     const [category, setCategory] = useState<string | undefined>();
+    const [products, setProducts] = useState<ProductDetails | null>(null)
     const [id, setId] = useState<string | undefined>();
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState<number>(10);
@@ -70,7 +43,23 @@ const CategoryProducts = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const total = 10
     const error = false
-    const isLoading = false
+    const [isLoading, setIsLoading] = useState(false)
+
+    const fetchProducts = async () => {
+        setIsLoading(true)
+        try {
+            const response = await api.get(`/products/categories/${id}`)
+            console.log(response.data, 'response');
+            setIsLoading(false)
+            setProducts(response.data)
+
+        } catch (error) {
+            console.log(error);
+            setIsLoading(false)
+            setProducts(null)
+
+        }
+    }
 
 
     useEffect(() => {
@@ -78,10 +67,22 @@ const CategoryProducts = () => {
         setId(routeId);
     }, [routeCategory, routeId]);
 
+    useEffect(() => {
+        if (id) {
+            fetchProducts()
+        }
+    }, [id]);
 
-    const showDeleteConfirm = () => {
-        // Show a confirmation modal before deleting the product
-        console.log('Delete product');
+
+    const handleDeleteProduct = async (id: string) => {
+        try {
+            await api.delete(`/products/${id}`)
+            toast.success('Product deleted successfully');
+            fetchProducts()
+        } catch (error) {
+            console.log(error);
+
+        }
     };
     const columns: ColumnsType<Product> = [
         {
@@ -106,21 +107,6 @@ const CategoryProducts = () => {
             render: (text, record) => <a onClick={() => navigate(`/product/${record.id}`)}>{text}</a>,
         },
         {
-            title: 'Category',
-            dataIndex: 'category',
-            key: 'category',
-            sorter: true,
-            sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
-            // render: (text, record) => <a onClick={() => navigate(`/product/${record.id}`)}>{text}</a>,
-        },
-        {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
@@ -136,37 +122,29 @@ const CategoryProducts = () => {
         },
         {
             title: 'Created At',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            dataIndex: 'created_at',
+            key: 'created_at',
             sorter: true,
             sortDirections: ['ascend', 'descend'],
+            render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
         },
         {
             title: 'Updated At',
-            dataIndex: 'updatedAt',
-            key: 'updatedAt',
+            dataIndex: 'updated_at',
+            key: 'updated_at',
             sorter: true,
             sortDirections: ['ascend', 'descend'],
+            render: (date) => <>{date ? moment(date).format('DD-MMM-YYYY') : '-'}</>,
         },
         {
             title: '',
             dataIndex: 'action',
             key: 'action',
-            // sorter: true,
-            // sortDirections: ['ascend', 'descend'],
-            // sortOrder: sortBy === 'name' ? (sortOrder === 'asc' ? 'ascend' : 'descend') : null,
-            // onHeaderCell: (column) => ({
-            //     onClick: () => {
-            //         setSortBy(column.dataIndex as string);
-            //         setSortOrder(sortBy === column.dataIndex && sortOrder === 'asc' ? 'desc' : 'asc');
-            //     },
-            // }),
-            render: (text, record) => <div>
+            render: (_, record) => <div>
                 <Button type="link" onClick={() => navigate(`/product/${record.id}`)}>Edit</Button>
-                <Button type="link" danger onClick={() => showDeleteConfirm()}>Delete</Button>
+                <Button type="link" danger onClick={() => showDeleteConfirm(handleDeleteProduct, record.id)}>Delete</Button>
             </div>,
         },
-        // Add more columns as needed
     ];
 
 
@@ -194,14 +172,13 @@ const CategoryProducts = () => {
                     </div>
                     <Table
                         className="mt-4"
-                        rowKey="id"
                         columns={columns}
-                        dataSource={productData}
+                        dataSource={products !== null && products.products}
                         pagination={false}
-                    // loading={isLoading}
+                        loading={isLoading}
                     // onChange={handleTableChange}
                     />
-                    {productData.length > 0 && (
+                    {products !== null && products.products.length > 0 && (
                         <div className="bg-gray-200 p-4 flex justify-between items-center">
                             <Pagination
                                 current={page}
@@ -223,7 +200,7 @@ const CategoryProducts = () => {
                         </div>
 
                     )}
-                    {productData.length === 0 && !isLoading && !error && <p>No products in this category.</p>}
+                    {products !== null && products.total === 0 && !isLoading && !error && <p>No products in this category.</p>}
                 </div>
             </div>
         </>

@@ -14,15 +14,23 @@ export interface Category {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
-  category: string;
+  category_id: string;
   price: number;
   stock: number;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
   imageUrl?: string;
   description?: string;
+}
+
+export interface ProductDetails {
+  currentPage: number;
+  pageSize: number;
+  products: Product[];
+  total: number;
+  totalPages: number;
 }
 
 export interface UserDetails {

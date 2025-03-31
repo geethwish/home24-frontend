@@ -14,8 +14,6 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   dispatch(validateToken());
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
-  console.log(isLoggedIn, "isLoggedIn");
-
   return isLoggedIn ? <>{children}</> : <Navigate to="/login" />;
 };
 

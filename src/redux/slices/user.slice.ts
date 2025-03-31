@@ -49,8 +49,6 @@ export const userSlice = createSlice({
     },
     validateToken: (state) => {
       const token = localStorage.getItem("authToken");
-      console.log(token);
-
       const userDetails: UserToken | null = decodeToken(token ?? "");
       if (userDetails) {
         state.userDetails = userDetails;
