@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -26,8 +27,10 @@ interface SubCategory {
 
 
 const Sidebar = () => {
+    const navigate = useNavigate();
     const isCollapsed = useSelector((state: RootState) => state.themeSettings.isMenuCollapsed);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
 
     const getRandomIcon = (id: number) => {
         const icons = [<HomeFilled />, <BranchesOutlined />, <CustomerServiceFilled />];
@@ -38,7 +41,7 @@ const Sidebar = () => {
         // CHeck for unlimited subcategories
         const transformCategoriesToMenuItems = (categories: Category[]): MenuItem[] => {
             return categories.map((category: Category, index: number) => ({
-                key: category.id,
+                key: `/products/${category.id}`,
                 label: category.name,
                 icon: category.children && category.children.length > 0 ? getRandomIcon(index) : null,
                 type: category.children && category.children.length > 0 ? 'submenu' : 'item',
@@ -65,8 +68,8 @@ const Sidebar = () => {
                 label: 'Product',
                 type: 'group',
                 children: [
-                    { key: '13', label: 'Products' },
-                    { key: '14', label: 'Add Product' },
+                    { key: '/products', label: 'Products' },
+                    { key: '/product', label: 'Add Product' },
                 ],
             },
         ]
@@ -91,29 +94,38 @@ const Sidebar = () => {
         }
     }
 
+    const handleMenuClick: MenuProps['onClick'] = (e) => {
+        const selectedKey = e.key;
+        navigate(`${selectedKey}`)
+
+    }
+
     useEffect(() => {
         fetchCategories()
     }, [])
 
 
     return (
-        <Sider trigger={null} collapsible collapsed={isCollapsed} style={{ backgroundColor: '#ffff' }} >
+        <Sider trigger={null} collapsible collapsed={isCollapsed} style={{ backgroundColor: '#ffff' }} width={260} >
 
             <div className='flex flex-col justify-center items-center'>
-                <img
-                    src={logo}
-                    alt={"Home24 BXP Logo"}
-                    loading="lazy"
-                    className="w-16 h-16"
-                />
-                {
-                    !isCollapsed && <h3 className='text-primary font-bold text-2xl'>
-                        Home24 BXP
-                    </h3>
-                }
+                <Link to={'/'}>
+                    <img
+                        src={logo}
+                        alt={"Home24 BXP Logo"}
+                        loading="lazy"
+                        className="w-16 h-16"
+                    />
+                    {
+                        !isCollapsed && <h3 className='text-primary font-bold text-2xl'>
+                            Home24 BXP
+                        </h3>
+                    }
+                </Link>
 
             </div>
             <Menu
+                onClick={handleMenuClick}
                 theme="light"
                 mode="inline"
                 defaultSelectedKeys={['1']}

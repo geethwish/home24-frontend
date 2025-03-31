@@ -78,6 +78,7 @@ const ManageProductDetails = () => {
 
         }
     }
+
     useEffect(() => {
         if (id) {
             setIsEdit(true);
@@ -90,6 +91,9 @@ const ManageProductDetails = () => {
     useEffect(() => {
         fetchCategories()
     }, [])
+
+    console.log(isLoading, 'isLoading');
+
 
     return (
         <div>
@@ -188,36 +192,36 @@ const ManageProductDetails = () => {
                             <Form.Item<Product>
                                 label="Product Name"
                                 name="name"
-                                rules={[{ required: true, message: 'Please input your email!' }]}
+                                rules={[{ required: true, message: 'Please input product name' }]}
                             >
-                                <Input size='large' placeholder='johnsmith@example.com' />
+                                <Input size='large' placeholder='Wall sticker' />
                             </Form.Item>
 
                             <Form.Item<Product>
                                 label="Product Description"
                                 name="description"
                             >
-                                <TextArea size='large' placeholder='johnsmith@example.com' />
+                                <TextArea size='large' placeholder='Color full, Different size, Different shape wall mirror stickers' />
                             </Form.Item>
 
                             <Form.Item<Product>
                                 label="Product Price"
                                 name="price"
-                                rules={[{ required: true, message: 'Please input your email!' }]}
+                                rules={[{ required: true, message: 'Please input your product price' }]}
                             >
                                 <Input size='large' placeholder='$0.00' />
                             </Form.Item>
                             <Form.Item<Product>
                                 label="Product Image URL"
                                 name="imageUrl"
-                                rules={[{ required: true, message: 'Please input your email!' }]}
+                                rules={[{ required: true, message: 'Please input product image url' }]}
                             >
                                 <Input size='large' placeholder='https://example.com/image.jpg' />
                             </Form.Item>
                             <Form.Item<Product>
                                 label="Product Stock"
                                 name="stock"
-                                rules={[{ required: true, message: 'Please input your email!' }]}
+                                rules={[{ required: true, message: 'Please input available stock' }]}
                             >
                                 <Input size='large' placeholder='100' />
                             </Form.Item>
