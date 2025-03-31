@@ -62,3 +62,17 @@ export interface CategoryForm {
   description: string;
   parent_id?: number;
 }
+
+export interface ProductTableProps {
+  products: ProductDetails;
+  isLoading: boolean;
+  error: ResponseError | null;
+  page: number;
+  pageSize: number;
+  onPageChange: (page: number, pageSize: number) => void;
+  onSortChange?: (sortBy: string, sortOrder: "asc" | "desc") => void;
+  onDeleteProduct: (id: string) => void;
+  total: number;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+}

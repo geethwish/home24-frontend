@@ -1,8 +1,7 @@
 {
   "files": [],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true
+    "noImplicitAny": true
   },
   "references": [
     { "path": "./tsconfig.app.json" },

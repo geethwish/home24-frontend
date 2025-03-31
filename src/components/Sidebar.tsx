@@ -109,7 +109,7 @@ const Sidebar = () => {
         <Sider trigger={null} collapsible collapsed={isCollapsed} style={{ backgroundColor: '#ffff' }} width={260} >
 
             <div className='flex flex-col justify-center items-center'>
-                <Link to={'/'}>
+                <Link to={'/'} className='w-full flex flex-col items-center'>
                     <img
                         src={logo}
                         alt={"Home24 BXP Logo"}
