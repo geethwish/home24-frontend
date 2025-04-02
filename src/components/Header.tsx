@@ -4,6 +4,7 @@ import {
     MenuUnfoldOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { toggleMenuCollapse } from '../redux/slices/themeSettings.slice';
@@ -45,7 +46,7 @@ const HeaderSection = () => {
             <Button
                 className='p-0 m-0 bg-primary'
                 type="link"
-                icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                icon={isCollapsed ? <FaArrowRightLong /> : <FaArrowLeftLong />}
                 onClick={handleToggleMenu}
                 style={{
                     fontSize: '24px',

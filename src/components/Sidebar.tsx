@@ -5,6 +5,10 @@ import {
     CustomerServiceFilled,
     HomeFilled
 } from '@ant-design/icons';
+import { MdRamenDining, MdSportsFootball } from "react-icons/md";
+import { HiComputerDesktop } from "react-icons/hi2";
+import { GiHeartBeats } from "react-icons/gi";
+import { FaApple, FaAtom, FaAvianex, FaBloggerB, FaBrain } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import api from '../services/api';
@@ -33,7 +37,7 @@ const Sidebar = () => {
 
 
     const getRandomIcon = (id: number) => {
-        const icons = [<HomeFilled />, <BranchesOutlined />, <CustomerServiceFilled />];
+        const icons = [<HomeFilled />, <BranchesOutlined />, <CustomerServiceFilled />, <MdRamenDining />, <HiComputerDesktop />, <GiHeartBeats />, <MdSportsFootball />, <FaApple />, <FaAvianex />, <FaAtom />, <FaBloggerB />, <FaBrain />];
         return icons[id];
     };
     const reArrangeMenuItems = (categories: Category[]) => {
