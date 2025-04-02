@@ -1,7 +1,5 @@
 import { Avatar, Button, Dropdown, Layout, MenuProps } from 'antd';
 import {
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     LogoutOutlined
 } from '@ant-design/icons';
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
