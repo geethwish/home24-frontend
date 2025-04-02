@@ -1,5 +1,5 @@
 import { ColumnsType } from 'antd/es/table';
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Product, ProductTableProps } from '../../types';
 import { Button, Image, Pagination, Select, Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
