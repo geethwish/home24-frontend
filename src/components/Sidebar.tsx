@@ -9,11 +9,13 @@ import { MdRamenDining, MdSportsFootball } from "react-icons/md";
 import { HiComputerDesktop } from "react-icons/hi2";
 import { GiHeartBeats } from "react-icons/gi";
 import { FaApple, FaAtom, FaAvianex, FaBloggerB, FaBrain } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import api from '../services/api';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaPlus } from 'react-icons/fa6';
 const { Sider } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -72,8 +74,8 @@ const Sidebar = () => {
                 label: 'Product',
                 type: 'group',
                 children: [
-                    { key: '/products', label: 'Products' },
-                    { key: '/product', label: 'Add Product' },
+                    { key: '/products', label: 'Products', icon: <AiFillProduct /> },
+                    { key: '/product', label: 'Add Product', icon: <FaPlus /> },
                 ],
             },
         ]
