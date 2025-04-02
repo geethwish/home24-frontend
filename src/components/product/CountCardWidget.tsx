@@ -5,6 +5,12 @@ interface CountCardProps {
     count: number;
     icon: React.ReactNode;
 }
+
+/**
+ * CountCard component displays a card with a title, count, and icon.
+ * It is used to show the total number of products or categories.
+ */
+
 const CountCard: FC<CountCardProps> = ({ title, count, icon }) => {
     return (
         <div className='widget-card'>
@@ -28,3 +34,4 @@ const CountCard: FC<CountCardProps> = ({ title, count, icon }) => {
 }
 
 export default CountCard
+

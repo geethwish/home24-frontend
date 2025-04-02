@@ -32,7 +32,8 @@ const showDeleteConfirm = (callback: (id: string) => void, id: string) => {
     });
 };
 
-const CategoryProducts = () => {
+
+const ViewProductByCategory = () => {
     const navigate = useNavigate();
     const { category: routeCategory, id: routeId } = useParams<{ category: string; id: string }>();
 
@@ -73,7 +74,6 @@ const CategoryProducts = () => {
     const onHandlePageChange = (page: number, pageSize: number) => {
         setPage(page);
         setPageSize(pageSize);
-
     }
 
     return (
@@ -121,4 +121,4 @@ const CategoryProducts = () => {
     )
 }
 
-export default CategoryProducts
+export default ViewProductByCategory

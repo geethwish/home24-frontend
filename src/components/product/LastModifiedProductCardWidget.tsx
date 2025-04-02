@@ -8,7 +8,12 @@ interface LastModifiedProductWidgetProps extends Product {
     title: string
 }
 
-const LastModifiedProduct: FC<LastModifiedProductWidgetProps> = ({ name, title, updated_at, imageUrl, id }) => {
+/**
+ * LastModifiedProductCardWidget component displays the last modified product Details.
+ * It shows the product name, last modified date, and image.
+ */
+
+const LastModifiedProductCardWidget: FC<LastModifiedProductWidgetProps> = ({ name, title, updated_at, imageUrl, id }) => {
     if (!name) {
         return null;
     }
@@ -47,4 +52,4 @@ const LastModifiedProduct: FC<LastModifiedProductWidgetProps> = ({ name, title, 
     );
 }
 
-export default LastModifiedProduct
+export default LastModifiedProductCardWidget

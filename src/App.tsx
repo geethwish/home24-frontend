@@ -10,9 +10,9 @@ import PageLoader from './components/PageLoader'
 const LoginPage = lazy(() => import('./pages/Login'))
 const RegisterPage = lazy(() => import('./pages/Register'))
 const DashboardPage = lazy(() => import('./pages/Dashboard'))
-const CategoryProductsPage = lazy(() => import('./pages/CategoryProducts'))
+const ViewProductByCategory = lazy(() => import('./pages/ViewProductByCategory'))
 const ManageProductDetailsPage = lazy(() => import('./pages/ManageProductDetails'))
-const AllProductsPage = lazy(() => import('./pages/Products'))
+const AllProductsPage = lazy(() => import('./pages/AllProducts'))
 
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
           }
         >
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/:category/:id" element={<CategoryProductsPage />} />
+          <Route path="/:category/:id" element={<ViewProductByCategory />} />
           <Route path="/product" element={<ManageProductDetailsPage />} />
           <Route path="/product/:id" element={<ManageProductDetailsPage />} />
           <Route path="/products" element={<AllProductsPage />} />
