@@ -4,8 +4,8 @@ import FooterSection from '../components/Footer';
 
 import HeaderSection from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import LastModifiedProduct from '../components/product/LastModifiedProductCardWidget';
-import CountCard from '../components/product/CountCardWidget';
+import LastModifiedProduct from '../components/widgets/LastModifiedProductCard';
+import CountCard from '../components/widgets/CountCard';
 import {
     UnorderedListOutlined, ProductOutlined
 } from '@ant-design/icons';
