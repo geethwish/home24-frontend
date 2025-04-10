@@ -1,5 +1,5 @@
-import { Breadcrumb, Button, Card, Col, Form, Image, Input, Row, Select, Tooltip } from 'antd';
-import { useState, useEffect } from 'react';
+import { Breadcrumb, Button, Card, Col, Form, Image, Input, InputNumber, Row, Select, Tooltip } from 'antd';
+import { useState, useEffect, FC, ReactElement, ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Product } from '../types';
 import {
@@ -10,6 +10,7 @@ import {
 import api from '../services/api';
 import { toast } from 'react-toastify';
 import { attributeType } from '../static/attributesType';
+import { attributeTags } from '../static/attributeTags';
 
 const { TextArea } = Input
 const { Option } = Select;
@@ -41,10 +42,7 @@ const ManageProductDetails = () => {
     }
 
     const handleFormSubmit = async (values: Product) => {
-        console.log(values);
 
-
-        return false
         if (isEdit) {
             try {
                 await api.patch(`/products/${product?.id}`, { ...values })
@@ -98,9 +96,43 @@ const ManageProductDetails = () => {
         fetchCategories()
     }, [])
 
-    console.log(attributesValues, 'avalues');
+    console.log(isLoading, 'avalues');
 
+    const getCardHeader = (text: string): ReactNode => {
+        return <div className='flex justify-between items-center'>
+            <h6 >{text}</h6>
+            {
+                isEdit && <Button type="link" shape="circle"
+                    icon={showForm ? <EyeFilled /> : <EditOutlined />}
+                    onClick={() => setShowForm((prev) => !prev)} >
+                    {showForm ? 'View' : "Edit"}
+                </Button>
+            }
 
+        </div>
+    };
+
+    const getValueField = (type: 'text' | 'url' | 'number' | 'boolean' | 'tags'): ReactNode => {
+        if (type === 'boolean') {
+            return <Select size='large'>
+                <Option value="true">True</Option>
+                <Option value="false">False</Option>
+            </Select>
+        } else if (type === 'text' || type === 'url') {
+            return <Input size='large' />
+
+        } else if (type === 'number') {
+            return <InputNumber size='large' className='w-full' style={{ width: '100%' }} />
+        } else if (type === 'tags') {
+            return <Select mode="tags" size='large' placeholder="Tags" >
+                {
+                    attributeTags.map((tag) => (
+                        <Option key={tag.name} value={tag.name}>{tag.label}</Option>
+                    ))
+                }
+            </Select>
+        }
+    }
     return (
         <div>
             <div className="mt-4 mb-1">
@@ -116,19 +148,23 @@ const ManageProductDetails = () => {
                 />
             </div>
             <div className='flex justify-center items-center'>
+
                 <Card
-                    title={isEdit ? 'Modify Product' : "Add Product"}
+                    title={getCardHeader(isEdit ? 'Modify Product' : "Add Product")}
                     style={{ marginTop: 16 }}
                     className='w-full'
                 >
                     {
-                        isEdit && <>
+                        isEdit && <div className='product-image'>
                             <Image
                                 className="w-full"
                                 src={product?.imageUrl}
                                 alt="Product Image"
                                 fallback={'/src/assets/images/placeholderImage.png'}
-                                wrapperStyle={{ width: '100%', height: 'auto' }}
+                                wrapperStyle={{ width: '100%' }}
+                                loading={'lazy'}
+                                height={300}
+
                             />
                             <h2 className='text-primary text-xl mt-2 mb-2'>{product?.name ?? ""}
                                 <Tooltip title={!showForm ? "Edit Product" : "View Product"}>
@@ -137,51 +173,74 @@ const ManageProductDetails = () => {
                                         onClick={() => setShowForm((prev) => !prev)} />
                                 </Tooltip>
                             </h2>
-                        </>
+                        </div>
                     }
 
 
                     {
-                        isEdit && !showForm && <>
+                        isEdit && !showForm && <div className='flex flex-wrap justify-between  mb-4'>
+                            <div className='flex-1'>
+                                <strong className='text-gray-400'>Description</strong>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
 
-                            <strong className='text-gray-400'>Description</strong>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
+                                    {
+                                        product?.description ?? ""
+                                    }
+                                </h6>
+                                <p className='text-gray-400'>Category</p>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
+                                    {
+                                        product?.category_id ?? ""
+                                    }
+                                </h6>
+                                <p className='text-gray-400'>Price</p>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
+                                    ${
+                                        product?.price
+                                    }
+                                </h6>
+                                <p className='text-gray-400'>Stock</p>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
+                                    {
+                                        product?.stock ?? ""
+                                    }
+                                </h6>
+                                <p className='text-gray-400'>Created At</p>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
+                                    {
+                                        product?.created_at ?? ""
+                                    }
+                                </h6>
+                                <p className='text-gray-400'>Updated At</p>
+                                <h6 className='mt-1 mb-2 text-gray-500'>
+                                    {
+                                        product?.updated_at ?? ""
+                                    }
+                                </h6>
+                            </div>
+                            <div className='flex-1'>
+                                {
+                                    product?.attributes && product?.attributes.length > 0 && <div className='w-full md:w-1/2 lg:w-1/2'>
+                                        <strong className='text-gray-400'>Attributes</strong>
+                                        {
+                                            product?.attributes.map((attribute, index) => (
+                                                <div key={index} className='mt-2 mb-2'>
+                                                    <p className='text-gray-400'>{attribute.code}</p>
+                                                    <h6 className='mt-1 mb-2 text-gray-500 capitalize'>
+                                                        {
+                                                            Array.isArray(attribute.value) ? attribute.value.join(', ') : attribute.value
+                                                        }
+                                                    </h6>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                }
+                            </div>
 
-                                {
-                                    product?.description ?? ""
-                                }
-                            </h6>
-                            <p className='text-gray-400'>Category</p>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
-                                {
-                                    product?.category_id ?? ""
-                                }
-                            </h6>
-                            <p className='text-gray-400'>Price</p>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
-                                ${
-                                    product?.price
-                                }
-                            </h6>
-                            <p className='text-gray-400'>Stock</p>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
-                                {
-                                    product?.stock ?? ""
-                                }
-                            </h6>
-                            <p className='text-gray-400'>Created At</p>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
-                                {
-                                    product?.created_at ?? ""
-                                }
-                            </h6>
-                            <p className='text-gray-400'>Updated At</p>
-                            <h6 className='mt-1 mb-2 text-gray-500'>
-                                {
-                                    product?.updated_at ?? ""
-                                }
-                            </h6>
-                        </>
+
+
+                        </div>
 
                     }
 
@@ -287,11 +346,12 @@ const ManageProductDetails = () => {
                                                 >
                                                     <Row gutter={16}>
                                                         <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
-
-                                                            <Form.Item label="Type" name={[field.name, 'type']}>
+                                                            <Form.Item label="Type" name={[field.name, 'type']}
+                                                                rules={[{ required: true, message: 'Please input attribute type' }]}>
                                                                 <Select
                                                                     placeholder='Select Attribute Type'
                                                                     size='large'
+
                                                                 >
                                                                     {
                                                                         attributeType.length > 0 && attributeType.map((attribute) => (
@@ -302,24 +362,25 @@ const ManageProductDetails = () => {
                                                             </Form.Item>
                                                         </Col>
                                                         <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
-                                                            <Form.Item label="Name" name={[field.name, 'code']}>
+                                                            <Form.Item
+                                                                label="Name"
+                                                                name={[field.name, 'code']}
+                                                                rules={[{ required: true, message: 'Please input attribute name' }]}
+                                                            >
                                                                 <Input size='large' />
                                                             </Form.Item>
                                                         </Col>
-                                                        <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
-                                                            <Form.Item label="Value" name={[field.name, 'value']}>
-                                                                {
-                                                                    attributesValues !== undefined && attributesValues[index] !== undefined && attributesValues[index].type === 'boolean' ? (
-                                                                        <Select size='large'>
-                                                                            <Option value="true">True</Option>
-                                                                            <Option value="false">False</Option>
-                                                                        </Select>
-                                                                    ) : (
-                                                                        <Input size='large' />
-                                                                    )
-                                                                }
-                                                            </Form.Item>
-                                                        </Col>
+                                                        {
+                                                            attributesValues !== undefined && attributesValues[index] !== undefined && attributesValues[index].type && <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                                                <Form.Item label="Value" name={[field.name, 'value']}
+                                                                    rules={[{ required: true, message: 'Please input attribute value' }]}>
+                                                                    {
+                                                                        getValueField(attributesValues[index].type)
+                                                                    }
+                                                                </Form.Item>
+                                                            </Col>
+                                                        }
+
                                                     </Row>
                                                 </Card>
                                             </div>

@@ -186,4 +186,9 @@
   .no-margin {
     margin: 0px !important;
   }
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 }

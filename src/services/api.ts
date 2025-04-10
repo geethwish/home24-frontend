@@ -33,6 +33,12 @@ api.interceptors.response.use(
       // that falls out of the range of 2xx
       console.error("API Error:", error.response.status, error.response.data);
       switch (error.response.status) {
+        case 400:
+          toast.error(
+            "Bad request. Please check your input. Error: " +
+              error.response.data?.message
+          );
+          break;
         case 401:
           toast.error("Unauthorized. Please log in again.");
           store.dispatch(logout());
