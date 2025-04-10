@@ -13,6 +13,12 @@ export interface Category {
   updatedAt: string;
 }
 
+export interface AttributesProps {
+  id: number;
+  code: string;
+  type: string;
+  value: any;
+}
 export interface Product {
   id: string;
   name: string;
@@ -23,6 +29,7 @@ export interface Product {
   updated_at: string;
   imageUrl?: string;
   description?: string;
+  attributes?: AttributesProps[];
 }
 
 export interface ProductDetails {

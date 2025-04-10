@@ -1,13 +1,15 @@
-import { Breadcrumb, Button, Card, Form, Image, Input, Select, Tooltip } from 'antd';
+import { Breadcrumb, Button, Card, Col, Form, Image, Input, Row, Select, Tooltip } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Product } from '../types';
 import {
+    CloseOutlined,
     EditOutlined,
     EyeFilled
 } from '@ant-design/icons';
 import api from '../services/api';
 import { toast } from 'react-toastify';
+import { attributeType } from '../static/attributesType';
 
 const { TextArea } = Input
 const { Option } = Select;
@@ -17,6 +19,7 @@ const ManageProductDetails = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const [form] = Form.useForm<Product>()
+    const attributesValues = Form.useWatch('attributes', form);
     const [isEdit, setIsEdit] = useState(false);
     const [showForm, setShowForm] = useState(false)
     const [product, setProduct] = useState<Product>(null)
@@ -38,7 +41,10 @@ const ManageProductDetails = () => {
     }
 
     const handleFormSubmit = async (values: Product) => {
+        console.log(values);
 
+
+        return false
         if (isEdit) {
             try {
                 await api.patch(`/products/${product?.id}`, { ...values })
@@ -92,7 +98,7 @@ const ManageProductDetails = () => {
         fetchCategories()
     }, [])
 
-    console.log(isLoading, 'isLoading');
+    console.log(attributesValues, 'avalues');
 
 
     return (
@@ -110,8 +116,11 @@ const ManageProductDetails = () => {
                 />
             </div>
             <div className='flex justify-center items-center'>
-                <Card title={isEdit ? 'Modify Product' : "Add Product"
-                } style={{ width: 600, marginTop: 16 }}>
+                <Card
+                    title={isEdit ? 'Modify Product' : "Add Product"}
+                    style={{ marginTop: 16 }}
+                    className='w-full'
+                >
                     {
                         isEdit && <>
                             <Image
@@ -182,7 +191,7 @@ const ManageProductDetails = () => {
                             name="productForm"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
-                            style={{ maxWidth: 600 }}
+
                             initialValues={{ ...product }}
                             onFinish={handleFormSubmit}
                             onFinishFailed={handleFormSubmitFailed}
@@ -190,55 +199,137 @@ const ManageProductDetails = () => {
                             requiredMark={false}
                         >
 
+                            <Row gutter={16}>
+                                <Col className="gutter-row" xs={24} sm={24} md={12} lg={12}>
+                                    <Form.Item<Product>
+                                        label="Product Name"
+                                        name="name"
+                                        rules={[{ required: true, message: 'Please input product name' }]}
+                                    >
+                                        <Input size='large' placeholder='Wall sticker' />
+                                    </Form.Item>
+                                </Col>
+                                <Col className="gutter-row" xs={24} sm={24} md={12} lg={12}>
+                                    <Form.Item<Product>
+                                        label="Product Image URL"
+                                        name="imageUrl"
+                                        rules={[{ required: true, message: 'Please input product image url' }]}
+                                    >
+                                        <Input size='large' placeholder='https://example.com/image.jpg' />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
 
-                            <Form.Item<Product>
-                                label="Product Name"
-                                name="name"
-                                rules={[{ required: true, message: 'Please input product name' }]}
-                            >
-                                <Input size='large' placeholder='Wall sticker' />
-                            </Form.Item>
 
-                            <Form.Item<Product>
-                                label="Product Description"
-                                name="description"
-                            >
-                                <TextArea size='large' placeholder='Color full, Different size, Different shape wall mirror stickers' />
-                            </Form.Item>
 
-                            <Form.Item<Product>
-                                label="Product Price"
-                                name="price"
-                                rules={[{ required: true, message: 'Please input your product price' }]}
-                            >
-                                <Input size='large' placeholder='$0.00' />
-                            </Form.Item>
-                            <Form.Item<Product>
-                                label="Product Image URL"
-                                name="imageUrl"
-                                rules={[{ required: true, message: 'Please input product image url' }]}
-                            >
-                                <Input size='large' placeholder='https://example.com/image.jpg' />
-                            </Form.Item>
-                            <Form.Item<Product>
-                                label="Product Stock"
-                                name="stock"
-                                rules={[{ required: true, message: 'Please input available stock' }]}
-                            >
-                                <Input size='large' placeholder='100' />
-                            </Form.Item>
-                            <Form.Item<Product>
-                                label="Product Category"
-                                name="category_id"
-                            >
-                                <Select placeholder='Select Category' size='large'>
-                                    {
-                                        categories.length > 0 && categories.map((category) => (
-                                            <Option key={category.id} value={category.id}>{category.name}</Option>
-                                        ))
-                                    }
-                                </Select>
-                            </Form.Item>
+                            <Row gutter={16}>
+                                <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                    <Form.Item<Product>
+                                        label="Product Price"
+                                        name="price"
+                                        rules={[{ required: true, message: 'Please input your product price' }]}
+                                    >
+                                        <Input size='large' placeholder='$0.00' />
+                                    </Form.Item>
+                                </Col>
+
+                                <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                    <Form.Item<Product>
+                                        label="Product Stock"
+                                        name="stock"
+                                        rules={[{ required: true, message: 'Please input available stock' }]}
+                                    >
+                                        <Input size='large' placeholder='100' />
+                                    </Form.Item>
+                                </Col>
+                                <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                    <Form.Item<Product>
+                                        label="Product Category"
+                                        name="category_id"
+                                    >
+                                        <Select placeholder='Select Category' size='large'>
+                                            {
+                                                categories.length > 0 && categories.map((category) => (
+                                                    <Option key={category.id} value={category.id}>{category.name}</Option>
+                                                ))
+                                            }
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                                <Col className="gutter-row" span={24}>
+                                    <Form.Item<Product>
+                                        label="Product Description"
+                                        name="description"
+                                    >
+                                        <TextArea size='large' placeholder='Color full, Different size, Different shape wall mirror stickers' />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <h6 className='text-gray-800 mb-3 text-lg'>
+                                Attributes
+                            </h6>
+                            <Form.List name="attributes">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map((field, index) => (
+                                            <div className='mb-4' key={field.key}>
+                                                <Card
+                                                    size="small"
+                                                    title={`Attribute ${index + 1}`}
+                                                    extra={
+                                                        <CloseOutlined
+                                                            onClick={() => {
+                                                                remove(field.name);
+                                                            }}
+                                                        />
+                                                    }
+                                                >
+                                                    <Row gutter={16}>
+                                                        <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+
+                                                            <Form.Item label="Type" name={[field.name, 'type']}>
+                                                                <Select
+                                                                    placeholder='Select Attribute Type'
+                                                                    size='large'
+                                                                >
+                                                                    {
+                                                                        attributeType.length > 0 && attributeType.map((attribute) => (
+                                                                            <Option key={attribute.id} value={attribute.name}>{attribute.label}</Option>
+                                                                        ))
+                                                                    }
+                                                                </Select>
+                                                            </Form.Item>
+                                                        </Col>
+                                                        <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                                            <Form.Item label="Name" name={[field.name, 'code']}>
+                                                                <Input size='large' />
+                                                            </Form.Item>
+                                                        </Col>
+                                                        <Col className="gutter-row" xs={24} sm={8} md={8} lg={8}>
+                                                            <Form.Item label="Value" name={[field.name, 'value']}>
+                                                                {
+                                                                    attributesValues !== undefined && attributesValues[index] !== undefined && attributesValues[index].type === 'boolean' ? (
+                                                                        <Select size='large'>
+                                                                            <Option value="true">True</Option>
+                                                                            <Option value="false">False</Option>
+                                                                        </Select>
+                                                                    ) : (
+                                                                        <Input size='large' />
+                                                                    )
+                                                                }
+                                                            </Form.Item>
+                                                        </Col>
+                                                    </Row>
+                                                </Card>
+                                            </div>
+                                        ))}
+                                        <Button type="primary" className='mt-3 mb-3' size='large' onClick={() => add()}>
+                                            Add Attribute
+                                        </Button>
+                                    </>
+                                )}
+                            </Form.List>
 
                             <div className='mt-1 flex justify-between items-center'>
                                 <Button htmlType="reset" className='' size='large'>
